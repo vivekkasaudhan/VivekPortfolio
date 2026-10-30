@@ -16,7 +16,9 @@ const getTransporter = () => {
   }
 
   return nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
       user: emailUser,
       pass: emailPass.replace(/\s+/g, "") // Automatically strip spaces from Google 16-character app passwords
@@ -100,10 +102,10 @@ export const createContactMessage = async (req, res) => {
       message: "Thanks for reaching out! Your message has been sent successfully."
     });
   } catch (mailError) {
-    console.error("Nodemailer error:", mailError.message);
+    console.error("Nodemailer error details:", mailError);
     return res.status(500).json({
       success: false,
-      message: "Failed to send email. Please check server email credentials."
+      message: `Failed to send email: ${mailError.message || "Please check server email credentials."}`
     });
   }
 };
